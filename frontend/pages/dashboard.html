@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Dashboard – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html" style="text-decoration:none;color:inherit">
+      <span style="font-size:1.4rem">🏔️ Banjare</span>
+    </a>
+    <div class="user-info mt-3">
+      <div class="user-avatar" id="sidebarAvatar">U</div>
+      <div>
+        <div class="fw-bold" id="sidebarName">User</div>
+        <small style="opacity:0.65">Traveler</small>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link active" href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+    <a class="sidebar-link" href="my-bookings.html"><i class="fas fa-calendar-check"></i>My Bookings</a>
+    <a class="sidebar-link" href="profile.html"><i class="fas fa-user-cog"></i>Profile</a>
+    <a class="sidebar-link" href="vehicles.html"><i class="fas fa-search"></i>Find Vehicles</a>
+    <a class="sidebar-link" href="tours.html"><i class="fas fa-compass"></i>Explore Tours</a>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"/>
+    <a class="sidebar-link text-danger-light" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </nav>
+</nav>
+
+<div class="main-content">
+  <!-- Page Header -->
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h1>Good day, <span id="headerName">Traveler</span>! 👋</h1>
+      <p class="text-muted">Here's your travel overview</p>
+    </div>
+    <a href="vehicles.html" class="btn btn-banjare-primary">
+      <i class="fas fa-plus me-2"></i>Book a Vehicle
+    </a>
+  </div>
+
+  <!-- Stats row -->
+  <div class="row g-3 mb-4" id="statsRow">
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d1fae5"><i class="fas fa-calendar-check" style="color:#065f46"></i></div>
+        <h3 id="statTotal">-</h3>
+        <p>Total Bookings</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3c7"><i class="fas fa-clock" style="color:#92400e"></i></div>
+        <h3 id="statUpcoming">-</h3>
+        <p>Upcoming Trips</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe"><i class="fas fa-check-circle" style="color:#1e40af"></i></div>
+        <h3 id="statCompleted">-</h3>
+        <p>Trips Completed</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fce7f3"><i class="fas fa-rupee-sign" style="color:#9d174d"></i></div>
+        <h3 id="statSpent">-</h3>
+        <p>Total Spent</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Bookings -->
+  <div class="banjare-table mb-4">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">Recent Bookings</h5>
+      <a href="my-bookings.html" class="btn btn-sm btn-outline-success">View All</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Booking ID</th><th>Vehicle / Tour</th><th>Dates</th>
+            <th>Amount</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTableBody">
+          <tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm text-success"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="stat-card text-center" style="cursor:pointer" onclick="window.location='vehicles.html'">
+        <div style="font-size:2.5rem">🚗</div>
+        <h5 class="mt-2 mb-1" style="font-family:'Yeseva One',serif">Book a Vehicle</h5>
+        <p class="text-muted small">Search verified vehicles</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card text-center" style="cursor:pointer" onclick="window.location='tours.html'">
+        <div style="font-size:2.5rem">🏕️</div>
+        <h5 class="mt-2 mb-1" style="font-family:'Yeseva One',serif">Explore Tours</h5>
+        <p class="text-muted small">Curated Uttarakhand packages</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card text-center" style="cursor:pointer" onclick="window.location='profile.html'">
+        <div style="font-size:2.5rem">👤</div>
+        <h5 class="mt-2 mb-1" style="font-family:'Yeseva One',serif">Edit Profile</h5>
+        <p class="text-muted small">Update your information</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth()) return;
+  const user = getUser();
+
+  // Update sidebar & header
+  document.getElementById('sidebarName').textContent = user.name;
+  document.getElementById('sidebarAvatar').textContent = user.name?.[0] || 'U';
+  document.getElementById('headerName').textContent   = user.name?.split(' ')[0] || 'Traveler';
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth();
+    showToast('Logged out', 'success');
+    setTimeout(() => window.location.href = '../index.html', 500);
+  });
+
+  // Load bookings
+  try {
+    const res = await BookingAPI.getMyBookings({ limit: 5 });
+    const bookings = res.data || [];
+
+    // Calculate stats
+    const total     = res.total || 0;
+    const upcoming  = bookings.filter(b => b.status === 'confirmed' && new Date(b.startDate) > new Date()).length;
+    const completed = bookings.filter(b => b.status === 'completed').length;
+    const spent     = bookings.filter(b => b.status === 'confirmed' || b.status === 'completed').reduce((s, b) => s + (b.totalPrice||0), 0);
+
+    document.getElementById('statTotal').textContent    = total;
+    document.getElementById('statUpcoming').textContent  = upcoming;
+    document.getElementById('statCompleted').textContent = completed;
+    document.getElementById('statSpent').textContent     = formatCurrency(spent);
+
+    // Render table
+    const tbody = document.getElementById('bookingsTableBody');
+    if (!bookings.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">
+        <i class="fas fa-calendar-times fa-2x mb-2 d-block opacity-25"></i>
+        No bookings yet. <a href="vehicles.html" class="text-success fw-bold">Book your first trip!</a>
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => {
+      const vehicle = b.vehicleId ? `${b.vehicleId.make} ${b.vehicleId.model}` : (b.tourId?.title || 'Tour Package');
+      const status  = `<span class="status-badge status-${b.status}">${capitalize(b.status)}</span>`;
+      return `<tr>
+        <td><small class="text-muted">#${b._id?.slice(-6)?.toUpperCase()}</small></td>
+        <td>${vehicle}</td>
+        <td>${formatDate(b.startDate)} → ${formatDate(b.endDate)}</td>
+        <td class="fw-bold">${formatCurrency(b.totalPrice)}</td>
+        <td>${status}</td>
+        <td>
+          <a href="booking-detail.html?id=${b._id}" class="btn btn-sm btn-outline-success me-1">View</a>
+          ${b.status === 'confirmed' ? `<button class="btn btn-sm btn-outline-danger" onclick="cancelBooking('${b._id}')">Cancel</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  } catch (err) {
+    document.getElementById('bookingsTableBody').innerHTML =
+      '<tr><td colspan="6" class="text-center py-4 text-danger">Failed to load bookings.</td></tr>';
+  }
+});
+
+async function cancelBooking(id) {
+  if (!confirm('Are you sure you want to cancel this booking?')) return;
+  try {
+    await BookingAPI.cancel(id, 'Cancelled by user');
+    showToast('Booking cancelled successfully.', 'success');
+    setTimeout(() => location.reload(), 1000);
+  } catch (err) {
+    showToast(err.message || 'Cancellation failed.', 'error');
+  }
+}
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

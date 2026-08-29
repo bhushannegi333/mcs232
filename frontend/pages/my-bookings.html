@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Bookings – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    .booking-card-item {
+      background: white; border-radius: 14px; padding: 20px 24px;
+      box-shadow: var(--shadow-sm); margin-bottom: 16px; border: 1px solid #f0f0f0;
+      transition: all 0.2s;
+    }
+    .booking-card-item:hover { box-shadow: var(--shadow-md); }
+    .booking-id { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
+    .booking-title { font-family: 'Yeseva One', serif; font-size: 1.2rem; color: var(--text-dark); }
+    .booking-detail-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 10px 0; }
+    .booking-detail-item { font-size: 0.85rem; color: var(--text-muted); }
+    .booking-detail-item strong { color: var(--text-dark); }
+    .price-big { font-family: 'Yeseva One', serif; font-size: 1.5rem; color: var(--green-dark); }
+    .review-section { background: var(--bg-light); border-radius: 10px; padding: 16px; margin-top: 14px; }
+    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter-tab-btn {
+      padding: 8px 18px; border-radius: 50px; border: 2px solid #e9ecef;
+      background: white; cursor: pointer; font-weight: 700; font-size: 0.85rem;
+      font-family: 'Nunito', sans-serif; transition: all 0.2s;
+    }
+    .filter-tab-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html" style="text-decoration:none;color:inherit"><span style="font-size:1.4rem">🏔️ Banjare</span></a>
+    <div class="user-info mt-3">
+      <div class="user-avatar" id="sidebarAvatar">U</div>
+      <div><div class="fw-bold" id="sidebarName">User</div><small style="opacity:0.65">Traveler</small></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link" href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+    <a class="sidebar-link active" href="my-bookings.html"><i class="fas fa-calendar-check"></i>My Bookings</a>
+    <a class="sidebar-link" href="profile.html"><i class="fas fa-user-cog"></i>Profile</a>
+    <a class="sidebar-link" href="vehicles.html"><i class="fas fa-search"></i>Find Vehicles</a>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"/>
+    <a class="sidebar-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </nav>
+</nav>
+
+<div class="main-content">
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h1>My Bookings 📅</h1>
+      <p class="text-muted">Track and manage all your trips</p>
+    </div>
+    <a href="vehicles.html" class="btn btn-banjare-primary">
+      <i class="fas fa-plus me-2"></i>Book New Trip
+    </a>
+  </div>
+
+  <!-- Success banner -->
+  <div id="successBanner" class="alert alert-success d-none">
+    <i class="fas fa-check-circle me-2"></i>
+    🎉 Booking confirmed! Your trip is booked. Check your email for confirmation.
+  </div>
+
+  <!-- Status filter tabs -->
+  <div class="filter-tabs">
+    <button class="filter-tab-btn active" data-status="">All Bookings</button>
+    <button class="filter-tab-btn" data-status="confirmed">✅ Confirmed</button>
+    <button class="filter-tab-btn" data-status="pending">⏳ Pending</button>
+    <button class="filter-tab-btn" data-status="completed">✔️ Completed</button>
+    <button class="filter-tab-btn" data-status="cancelled">❌ Cancelled</button>
+  </div>
+
+  <!-- Bookings container -->
+  <div id="bookingsContainer">
+    <div class="text-center py-5">
+      <div class="spinner-border text-success" style="width:3rem;height:3rem"></div>
+      <p class="mt-3 text-muted">Loading your bookings...</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4" id="bookingPagination"></div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background:var(--green-dark);color:white">
+        <h5 class="modal-title" style="font-family:'Yeseva One',serif">⭐ Write a Review</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="reviewBookingId"/>
+        <input type="hidden" id="reviewVehicleId"/>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Rating</label>
+          <div class="d-flex gap-2" id="starSelector">
+            <button type="button" class="btn btn-outline-warning btn-sm star-btn" data-val="1">★</button>
+            <button type="button" class="btn btn-outline-warning btn-sm star-btn" data-val="2">★★</button>
+            <button type="button" class="btn btn-outline-warning btn-sm star-btn" data-val="3">★★★</button>
+            <button type="button" class="btn btn-outline-warning btn-sm star-btn" data-val="4">★★★★</button>
+            <button type="button" class="btn btn-outline-warning btn-sm star-btn" data-val="5">★★★★★</button>
+          </div>
+          <input type="hidden" id="selectedRating" value="5"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Review</label>
+          <textarea class="form-control" id="reviewComment" rows="4" placeholder="Share your experience - vehicle condition, driver behaviour, punctuality..." maxlength="500" required></textarea>
+          <small class="text-muted"><span id="charCount">0</span>/500</small>
+        </div>
+        <div id="reviewAlert" class="alert d-none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-banjare-primary" onclick="submitReview()">
+          <i class="fas fa-paper-plane me-2"></i>Submit Review
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let activeStatus = '';
+let currentPage = 1;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth()) return;
+  const user = getUser();
+  document.getElementById('sidebarName').textContent   = user.name;
+  document.getElementById('sidebarAvatar').textContent = user.name?.[0] || 'U';
+
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth(); window.location.href = '../index.html';
+  });
+
+  // Show success banner if redirected after payment
+  if (new URLSearchParams(window.location.search).get('success')) {
+    document.getElementById('successBanner').classList.remove('d-none');
+  }
+
+  // Status tab filter
+  document.querySelectorAll('.filter-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeStatus = btn.dataset.status;
+      currentPage  = 1;
+      loadBookings();
+    });
+  });
+
+  // Review modal star selector
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('selectedRating').value = btn.dataset.val;
+      document.querySelectorAll('.star-btn').forEach((b,i) => {
+        b.classList.toggle('btn-warning', i < parseInt(btn.dataset.val));
+        b.classList.toggle('btn-outline-warning', i >= parseInt(btn.dataset.val));
+      });
+    });
+  });
+
+  document.getElementById('reviewComment').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = this.value.length;
+  });
+
+  loadBookings();
+});
+
+async function loadBookings(page = currentPage) {
+  const container = document.getElementById('bookingsContainer');
+  container.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-success"></div></div>';
+  const params = { page, limit: 8 };
+  if (activeStatus) params.status = activeStatus;
+  try {
+    const res = await BookingAPI.getMyBookings(params);
+    renderBookings(res.data || [], res.total || 0, Math.ceil((res.total||0)/8), page);
+  } catch (err) {
+    container.innerHTML = '<div class="text-center py-4 text-danger">Could not load bookings.</div>';
+  }
+}
+
+function renderBookings(bookings, total, totalPages, page) {
+  const container = document.getElementById('bookingsContainer');
+
+  if (!bookings.length) {
+    container.innerHTML = `
+      <div class="text-center py-5 text-muted">
+        <i class="fas fa-calendar-times fa-3x opacity-25 d-block mb-3"></i>
+        <h5>No bookings found</h5>
+        <p>${activeStatus ? `No ${activeStatus} bookings.` : 'You haven\'t made any bookings yet.'}</p>
+        <a href="vehicles.html" class="btn btn-banjare-primary mt-2">Book Your First Trip 🚗</a>
+      </div>`;
+    document.getElementById('bookingPagination').innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = bookings.map(b => {
+    const vehicle = b.vehicleId
+      ? `${b.vehicleId.make} ${b.vehicleId.model}`
+      : (b.tourId?.title || 'Tour Package');
+    const city   = b.vehicleId?.city || b.tourId?.startCity || '';
+    const img    = b.vehicleId?.images?.[0] || b.tourId?.images?.[0] || '';
+
+    const canCancel = b.status === 'confirmed' && new Date(b.startDate) > new Date();
+    const canReview = b.status === 'completed' && b.vehicleId;
+
+    return `
+    <div class="booking-card-item">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div class="flex-grow-1">
+          <div class="booking-id">BOOKING #${b._id?.slice(-8)?.toUpperCase()}</div>
+          <div class="booking-title">${vehicle}</div>
+          ${city ? `<div class="text-muted small"><i class="fas fa-map-marker-alt me-1 text-success"></i>${city}</div>` : ''}
+          <div class="booking-detail-row mt-2">
+            <div class="booking-detail-item"><i class="fas fa-calendar-alt me-1 text-success"></i><strong>Pickup:</strong> ${formatDate(b.startDate)}</div>
+            <div class="booking-detail-item"><i class="fas fa-calendar-check me-1 text-success"></i><strong>Return:</strong> ${formatDate(b.endDate)}</div>
+            <div class="booking-detail-item"><i class="fas fa-users me-1 text-success"></i><strong>Passengers:</strong> ${b.passengers}</div>
+            <div class="booking-detail-item"><i class="fas fa-map-pin me-1 text-success"></i><strong>Pickup:</strong> ${b.pickupLocation}</div>
+          </div>
+          <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
+            <span class="status-badge status-${b.status}">${capitalize(b.status)}</span>
+            <span class="text-muted small">Booked ${formatDate(b.createdAt)}</span>
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="price-big">${formatCurrency(b.totalPrice)}</div>
+          <small class="text-muted d-block">incl. GST & fees</small>
+        </div>
+      </div>
+
+      <!-- Price breakdown (collapsible) -->
+      <div class="review-section" style="margin-top:12px">
+        <div class="d-flex justify-content-between align-items-center" style="cursor:pointer" onclick="toggleBreakdown('${b._id}')">
+          <span class="fw-bold small">💰 Price Breakdown</span>
+          <i class="fas fa-chevron-down small" id="chevron-${b._id}"></i>
+        </div>
+        <div id="breakdown-${b._id}" class="d-none mt-2">
+          <div class="d-flex justify-content-between text-muted small"><span>Base fare</span><span>${formatCurrency(b.baseAmount)}</span></div>
+          <div class="d-flex justify-content-between text-muted small"><span>GST (18%)</span><span>${formatCurrency(b.taxAmount)}</span></div>
+          <div class="d-flex justify-content-between text-muted small"><span>Service charge (5%)</span><span>${formatCurrency(b.serviceCharge)}</span></div>
+          <div class="d-flex justify-content-between fw-bold small border-top pt-1 mt-1"><span>Total Paid</span><span style="color:var(--green-dark)">${formatCurrency(b.totalPrice)}</span></div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="d-flex gap-2 mt-3 flex-wrap">
+        ${canCancel ? `<button class="btn btn-sm btn-outline-danger" onclick="cancelBookingItem('${b._id}')"><i class="fas fa-times me-1"></i>Cancel Booking</button>` : ''}
+        ${canReview ? `<button class="btn btn-sm btn-outline-warning" onclick="openReviewModal('${b._id}','${b.vehicleId?._id||''}')"><i class="fas fa-star me-1"></i>Write Review</button>` : ''}
+        <button class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="fas fa-print me-1"></i>Print</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pagination
+  if (totalPages <= 1) { document.getElementById('bookingPagination').innerHTML = ''; return; }
+  let html = '<nav><ul class="pagination">';
+  html += `<li class="page-item ${page===1?'disabled':''}"><a class="page-link" href="#" onclick="changeBookingPage(${page-1})">‹</a></li>`;
+  for (let i = 1; i <= totalPages; i++) html += `<li class="page-item ${i===page?'active':''}"><a class="page-link" href="#" onclick="changeBookingPage(${i})">${i}</a></li>`;
+  html += `<li class="page-item ${page===totalPages?'disabled':''}"><a class="page-link" href="#" onclick="changeBookingPage(${page+1})">›</a></li></ul></nav>`;
+  document.getElementById('bookingPagination').innerHTML = html;
+}
+
+function toggleBreakdown(id) {
+  const el = document.getElementById(`breakdown-${id}`);
+  const ch = document.getElementById(`chevron-${id}`);
+  el.classList.toggle('d-none');
+  ch.classList.toggle('fa-chevron-down');
+  ch.classList.toggle('fa-chevron-up');
+}
+
+async function cancelBookingItem(id) {
+  if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
+  const reason = prompt('Please provide a reason for cancellation (optional):') || 'Cancelled by user';
+  try {
+    await BookingAPI.cancel(id, reason);
+    showToast('Booking cancelled successfully.', 'success');
+    setTimeout(() => loadBookings(), 800);
+  } catch (err) {
+    showToast(err.message || 'Cancellation failed.', 'error');
+  }
+}
+
+function openReviewModal(bookingId, vehicleId) {
+  document.getElementById('reviewBookingId').value = bookingId;
+  document.getElementById('reviewVehicleId').value = vehicleId;
+  document.getElementById('reviewComment').value   = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('selectedRating').value  = '5';
+  document.querySelectorAll('.star-btn').forEach((b,i) => {
+    b.classList.toggle('btn-warning', i < 5);
+    b.classList.toggle('btn-outline-warning', i >= 5);
+  });
+  new bootstrap.Modal(document.getElementById('reviewModal')).show();
+}
+
+async function submitReview() {
+  const bookingId = document.getElementById('reviewBookingId').value;
+  const vehicleId = document.getElementById('reviewVehicleId').value;
+  const rating    = parseInt(document.getElementById('selectedRating').value);
+  const comment   = document.getElementById('reviewComment').value.trim();
+  const alertEl   = document.getElementById('reviewAlert');
+
+  if (!comment) { alertEl.className='alert alert-warning'; alertEl.textContent='Please write a review.'; return; }
+  try {
+    await ReviewAPI.create({ bookingId, vehicleId, rating, comment });
+    bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+    showToast('Review submitted! Thank you 🌟', 'success');
+  } catch (err) {
+    alertEl.className = 'alert alert-danger';
+    alertEl.textContent = err.message || 'Could not submit review.';
+  }
+}
+
+function changeBookingPage(p) { currentPage = p; loadBookings(p); window.scrollTo(0,0); }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

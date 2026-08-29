@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banjare – Explore Uttarakhand | Travel & Cab Booking</title>
+  <meta name="description" content="Banjare – Uttarakhand's trusted platform for vehicle booking, tour packages, and travel planning. Kedarnath, Rishikesh, Nainital and more."/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar navbar-expand-lg banjare-nav fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <span class="brand-icon">🏔️</span>
+      <span class="brand-text">Banjare</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="pages/vehicles.html"><i class="fas fa-car me-1"></i>Vehicles</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/tours.html"><i class="fas fa-map-marked-alt me-1"></i>Tours</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/contact.html">Contact</a></li>
+        <li class="nav-item" id="navAuthLinks">
+          <a class="btn btn-outline-light btn-sm me-2" href="pages/login.html">Login</a>
+          <a class="btn btn-danger btn-sm" href="pages/register.html">Get Started</a>
+        </li>
+        <li class="nav-item d-none" id="navUserMenu">
+          <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="userNameBtn">
+              <i class="fas fa-user-circle me-1"></i><span id="navUserName">User</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="pages/dashboard.html"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+              <li><a class="dropdown-item" href="pages/my-bookings.html"><i class="fas fa-calendar-check me-2"></i>My Bookings</a></li>
+              <li><a class="dropdown-item" href="pages/profile.html"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+              <li class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═════════════════════════════════ -->
+<section class="hero-section" id="home">
+  <div class="hero-overlay"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="container hero-content">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-9">
+        <span class="hero-badge">🏔️ Uttarakhand's #1 Travel Platform</span>
+        <h1 class="hero-title">
+          Discover the<br/>
+          <span class="text-highlight">Land of Gods</span>
+        </h1>
+        <p class="hero-subtitle">Book verified vehicles and curated tour packages for Kedarnath, Rishikesh, Nainital, Auli & 20+ destinations</p>
+
+        <!-- Search Box -->
+        <div class="search-card">
+          <div class="search-tabs">
+            <button class="search-tab active" data-type="vehicle">🚗 Book a Vehicle</button>
+            <button class="search-tab" data-type="tour">🏕️ Find a Tour</button>
+          </div>
+          <form class="search-form" id="searchForm">
+            <div class="row g-2 align-items-end">
+              <div class="col-md-4">
+                <label>Destination</label>
+                <select class="form-select" id="searchCity">
+                  <option value="">Select destination...</option>
+                  <option>Dehradun</option><option>Rishikesh</option><option>Haridwar</option>
+                  <option>Mussoorie</option><option>Nainital</option><option>Kedarnath</option>
+                  <option>Badrinath</option><option>Auli</option><option>Jim Corbett</option>
+                  <option>Chopta</option><option>Almora</option><option>Munsiyari</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label>Travel Date</label>
+                <input type="date" class="form-control" id="searchDate" min="">
+              </div>
+              <div class="col-md-2">
+                <label>Passengers</label>
+                <select class="form-select" id="searchPassengers">
+                  <option value="1">1 Person</option><option value="2">2 People</option>
+                  <option value="4">4 People</option><option value="6">6 People</option>
+                  <option value="8">8+ People</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-search w-100">
+                  <i class="fas fa-search me-2"></i>Search
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ STATS ════════════════════════════════ -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-item"><span class="stat-num" data-target="500">0</span><span class="stat-plus">+</span><div class="stat-label">Verified Vehicles</div></div>
+      <div class="stat-item"><span class="stat-num" data-target="35">0</span><span class="stat-plus">M+</span><div class="stat-label">Annual Tourists</div></div>
+      <div class="stat-item"><span class="stat-num" data-target="20">0</span><span class="stat-plus">+</span><div class="stat-label">Destinations</div></div>
+      <div class="stat-item"><span class="stat-num" data-target="4800">0</span><span class="stat-plus">+</span><div class="stat-label">Happy Travelers</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ DESTINATIONS ═════════════════════════ -->
+<section class="section-padding" id="destinations">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Popular Destinations</span>
+      <h2 class="section-title">Where Do You Want to Go?</h2>
+      <p class="section-subtitle">From Himalayan peaks to sacred rivers — Uttarakhand has it all</p>
+    </div>
+    <div class="destinations-grid">
+      <div class="dest-card dest-big" onclick="searchDest('Rishikesh')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #1a3c34 0%, #2d6a4f 100%)">
+          <i class="fas fa-water dest-icon-bg"></i>
+        </div>
+        <div class="dest-overlay"><h3>Rishikesh</h3><span>Adventure & Spirituality</span></div>
+      </div>
+      <div class="dest-card" onclick="searchDest('Kedarnath')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #1a1a2e 0%, #16213e 100%)">
+          <i class="fas fa-gopuram dest-icon-bg"></i>
+        </div>
+        <div class="dest-overlay"><h3>Kedarnath</h3><span>Sacred Pilgrimage</span></div>
+      </div>
+      <div class="dest-card" onclick="searchDest('Nainital')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #003049 0%, #023e8a 100%)">
+          <i class="fas fa-water dest-icon-bg op-20"></i>
+        </div>
+        <div class="dest-overlay"><h3>Nainital</h3><span>Lake City</span></div>
+      </div>
+      <div class="dest-card" onclick="searchDest('Mussoorie')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #2d3a1e 0%, #4a5e2a 100%)">
+          <i class="fas fa-mountain dest-icon-bg"></i>
+        </div>
+        <div class="dest-overlay"><h3>Mussoorie</h3><span>Queen of Hills</span></div>
+      </div>
+      <div class="dest-card" onclick="searchDest('Auli')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #1a3a5c 0%, #2e6db4 100%)">
+          <i class="fas fa-skiing dest-icon-bg"></i>
+        </div>
+        <div class="dest-overlay"><h3>Auli</h3><span>Skiing Paradise</span></div>
+      </div>
+      <div class="dest-card" onclick="searchDest('Jim Corbett')">
+        <div class="dest-img" style="background: linear-gradient(160deg, #3b1800 0%, #7d4e1f 100%)">
+          <i class="fas fa-paw dest-icon-bg"></i>
+        </div>
+        <div class="dest-overlay"><h3>Jim Corbett</h3><span>Wildlife Safari</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURED VEHICLES ════════════════════ -->
+<section class="section-padding bg-light-green" id="featuredVehicles">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Fleet</span>
+      <h2 class="section-title">Our Verified Vehicles</h2>
+      <p class="section-subtitle">All vehicles are verified, insured and driven by experienced professionals</p>
+    </div>
+    <div class="row g-4" id="vehiclesContainer">
+      <!-- Loaded dynamically via JS -->
+      <div class="col-12 text-center py-4" id="vehicleLoader">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-2 text-muted">Loading vehicles...</p>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="pages/vehicles.html" class="btn btn-outline-success btn-lg">
+        View All Vehicles <i class="fas fa-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TOUR PACKAGES ════════════════════════ -->
+<section class="section-padding" id="tours">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Packages</span>
+      <h2 class="section-title">Curated Tour Packages</h2>
+      <p class="section-subtitle">Handcrafted experiences across Uttarakhand's best destinations</p>
+    </div>
+    <div class="row g-4" id="toursContainer">
+      <div class="col-12 text-center py-4">
+        <div class="spinner-border text-success" role="status"></div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="pages/tours.html" class="btn btn-success btn-lg">
+        Explore All Tours <i class="fas fa-compass ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ HOW IT WORKS ════════════════════════ -->
+<section class="section-padding how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">How Banjare Works</h2>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-icon"><i class="fas fa-search"></i></div>
+          <h4>Search</h4>
+          <p>Search vehicles or tours by destination and date</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+          <h4>Book</h4>
+          <p>Choose your vehicle or package and complete the booking form</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-icon"><i class="fas fa-credit-card"></i></div>
+          <h4>Pay Securely</h4>
+          <p>Pay online via Razorpay – UPI, cards, net banking</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-icon"><i class="fas fa-mountain"></i></div>
+          <h4>Travel!</h4>
+          <p>Your confirmed booking arrives in email. Enjoy Uttarakhand!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ OWNER CTA ════════════════════════════ -->
+<section class="owner-cta-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2>Own a Vehicle in Uttarakhand? 🚗</h2>
+        <p>Join 500+ vehicle owners on Banjare. List your vehicle and start earning from tourists visiting Kedarnath, Rishikesh, and more.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="pages/register.html?role=owner" class="btn btn-light btn-lg fw-bold">
+          <i class="fas fa-plus-circle me-2"></i>List Your Vehicle
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TESTIMONIALS ═════════════════════════ -->
+<section class="section-padding testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Reviews</span>
+      <h2 class="section-title">What Travelers Say</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"Booked an Innova for Char Dham Yatra through Banjare. The driver was professional, vehicle was clean. Excellent experience!"</p>
+          <div class="reviewer"><strong>Priya Sharma</strong> <span>Delhi</span></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p>"The Rishikesh adventure package was beyond expectations. Rafting, bungee, camping — all organized seamlessly through Banjare."</p>
+          <div class="reviewer"><strong>Rahul Gupta</strong> <span>Mumbai</span></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="stars">★★★★☆</div>
+          <p>"Quick booking, transparent pricing, no hidden charges. Razorpay made payment super easy. Will use Banjare again for Auli skiing trip!"</p>
+          <div class="reviewer"><strong>Ankit Rawat</strong> <span>Dehradun</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="banjare-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="footer-brand">
+          <span class="brand-icon">🏔️</span>
+          <span class="brand-text">Banjare</span>
+        </div>
+        <p class="footer-desc">Uttarakhand's trusted travel & vehicle booking platform. Explore the Himalayas with confidence.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <h6>Platform</h6>
+        <ul class="footer-links">
+          <li><a href="pages/vehicles.html">Vehicles</a></li>
+          <li><a href="pages/tours.html">Tours</a></li>
+          <li><a href="pages/about.html">About Us</a></li>
+          <li><a href="pages/contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6>Quick Links</h6>
+        <ul class="footer-links">
+          <li><a href="pages/login.html">Login</a></li>
+          <li><a href="pages/register.html">Register</a></li>
+          <li><a href="pages/register.html?role=owner">List Vehicle</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h6>Popular Destinations</h6>
+        <div class="dest-tags">
+          <a href="#" class="dest-tag">Kedarnath</a><a href="#" class="dest-tag">Rishikesh</a>
+          <a href="#" class="dest-tag">Nainital</a><a href="#" class="dest-tag">Mussoorie</a>
+          <a href="#" class="dest-tag">Auli</a><a href="#" class="dest-tag">Badrinath</a>
+          <a href="#" class="dest-tag">Jim Corbett</a><a href="#" class="dest-tag">Chopta</a>
+        </div>
+        <div class="contact-info mt-3">
+          <p><i class="fas fa-envelope me-2"></i>support@banjare.in</p>
+          <p><i class="fas fa-phone me-2"></i>+91 9557166769</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Banjare – Bharatbhushan Negi (2452099854) | IGNOU MCA MCSP-232 Project</p>
+      <p class="text-muted small">Built with Node.js, Express, MongoDB & Bootstrap 5</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

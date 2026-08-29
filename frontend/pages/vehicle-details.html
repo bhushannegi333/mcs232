@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vehicle Details – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    body { padding-top: 70px; background: #f8fffe; }
+    .vehicle-gallery { height: 400px; background: var(--green-dark); border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 6rem; margin-bottom: 24px; }
+    .vehicle-gallery img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-card { background: white; border-radius: 14px; padding: 28px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+    .spec-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 16px 0; }
+    .spec-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--bg-light); border-radius: 10px; }
+    .spec-item i { font-size: 1.2rem; color: var(--green-mid); width: 22px; text-align: center; }
+    .spec-item span { font-weight: 700; font-size: 0.9rem; }
+    .booking-card { background: white; border-radius: 14px; padding: 28px; box-shadow: var(--shadow-md); position: sticky; top: 90px; border: 2px solid var(--green-pale); }
+    .price-display { font-family: 'Yeseva One', serif; font-size: 2.2rem; color: var(--green-dark); }
+    .price-breakdown { background: var(--bg-light); border-radius: 10px; padding: 16px; margin: 16px 0; font-size: 0.88rem; }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .price-row.total { font-weight: 800; font-size: 1rem; border-top: 2px solid #e9ecef; padding-top: 8px; margin-top: 8px; color: var(--green-dark); }
+    .feature-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .feature-pill { background: var(--green-pale); color: var(--green-dark); padding: 6px 14px; border-radius: 50px; font-size: 0.82rem; font-weight: 700; }
+    .owner-card { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--bg-light); border-radius: 10px; }
+    .owner-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--green-mid); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0; }
+    .review-card { border-left: 3px solid var(--green-mid); padding: 14px 18px; background: white; border-radius: 0 10px 10px 0; margin-bottom: 12px; }
+    .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar banjare-nav fixed-top scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html"><span class="brand-icon">🏔️</span><span class="brand-text">Banjare</span></a>
+    <div class="d-flex gap-2" id="navAuthLinks">
+      <a class="btn btn-outline-light btn-sm" href="login.html">Login</a>
+      <a class="btn btn-danger btn-sm" href="register.html">Register</a>
+    </div>
+    <div class="d-none" id="navUserMenu">
+      <div class="dropdown">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i><span id="navUserName"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+          <li><a class="dropdown-item" href="my-bookings.html">My Bookings</a></li>
+          <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" id="pageContent">
+  <div class="row">
+    <div class="col-12"><p class="text-muted skeleton" style="height:20px;width:200px"></p></div>
+    <div class="col-lg-8">
+      <div class="skeleton" style="height:400px;border-radius:16px;margin-bottom:24px"></div>
+      <div class="skeleton" style="height:300px;border-radius:14px"></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="skeleton" style="height:500px;border-radius:14px"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let vehicle = null, bookingId = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) { window.location.href = 'vehicles.html'; return; }
+  try {
+    const res = await VehicleAPI.getById(id);
+    vehicle = res.data;
+    renderPage(vehicle);
+    loadReviews(id);
+  } catch (err) {
+    document.getElementById('pageContent').innerHTML = '<div class="col-12 text-center py-5"><h4>Vehicle not found</h4><a href="vehicles.html" class="btn btn-success mt-3">← Back to Vehicles</a></div>';
+  }
+});
+
+function renderPage(v) {
+  const img = v.images?.[0] ? `<img src="${v.images[0]}" alt="${v.make}"/>` : `<span>🚗</span>`;
+  const stars = '★'.repeat(Math.round(v.rating||0)) + '☆'.repeat(5-Math.round(v.rating||0));
+  const ownerInitial = v.ownerId?.name?.[0] || '?';
+
+  document.getElementById('pageContent').innerHTML = `
+  <div class="row">
+    <div class="col-12 mb-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html" class="text-success">Home</a></li>
+          <li class="breadcrumb-item"><a href="vehicles.html" class="text-success">Vehicles</a></li>
+          <li class="breadcrumb-item active">${v.make} ${v.model}</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-lg-8">
+      <div class="vehicle-gallery">${img}</div>
+
+      <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+          <div>
+            <h1 style="font-family:'Yeseva One',serif;font-size:1.9rem">${v.make} ${v.model} (${v.year})</h1>
+            <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1 text-success"></i>${v.city}, Uttarakhand</p>
+          </div>
+          <div class="text-end">
+            <div style="color:#f4a261;font-size:1.1rem">${stars}</div>
+            <small class="text-muted">${v.totalRatings||0} reviews</small>
+          </div>
+        </div>
+
+        <div class="spec-grid">
+          <div class="spec-item"><i class="fas fa-car"></i><span>${capitalize(v.vehicleType)}</span></div>
+          <div class="spec-item"><i class="fas fa-users"></i><span>${v.seats} Seats</span></div>
+          <div class="spec-item"><i class="fas fa-gas-pump"></i><span>${capitalize(v.fuelType)}</span></div>
+          <div class="spec-item"><i class="fas fa-id-card"></i><span>${v.registrationNumber}</span></div>
+        </div>
+
+        ${v.features?.length ? `<h6 class="fw-bold mt-3 mb-2">Features & Amenities</h6>
+        <div class="feature-list">${v.features.map(f=>`<span class="feature-pill">✓ ${f}</span>`).join('')}</div>` : ''}
+
+        ${v.description ? `<h6 class="fw-bold mt-4 mb-2">About This Vehicle</h6><p class="text-muted">${v.description}</p>` : ''}
+
+        <h6 class="fw-bold mt-4 mb-2">Vehicle Owner</h6>
+        <div class="owner-card">
+          <div class="owner-avatar">${ownerInitial}</div>
+          <div>
+            <div class="fw-bold">${v.ownerId?.name || 'Owner'}</div>
+            <small class="text-muted"><i class="fas fa-phone me-1"></i>${v.ownerId?.phone || 'Contact via booking'}</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="detail-card">
+        <h5 style="font-family:'Yeseva One',serif">Customer Reviews</h5>
+        <div id="reviewsContainer"><div class="spinner-border spinner-border-sm text-success"></div></div>
+      </div>
+    </div>
+
+    <!-- Booking Card -->
+    <div class="col-lg-4">
+      <div class="booking-card">
+        <div class="price-display">${formatCurrency(v.pricePerDay)}</div>
+        <p class="text-muted mb-3">per day <span class="badge bg-success">GST included in total</span></p>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Pickup Date</label>
+          <input type="date" class="form-control" id="startDate" min="${new Date().toISOString().split('T')[0]}" onchange="calcPrice()"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Return Date</label>
+          <input type="date" class="form-control" id="endDate" onchange="calcPrice()"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Pickup Location</label>
+          <input type="text" class="form-control" id="pickupLocation" placeholder="e.g., Dehradun Bus Stand"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Passengers</label>
+          <select class="form-select" id="passengers">
+            ${Array.from({length: v.seats}, (_,i) => `<option value="${i+1}">${i+1} Passenger${i>0?'s':''}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="price-breakdown d-none" id="priceBreakdown">
+          <div class="price-row"><span>Base fare</span><span id="baseAmt">-</span></div>
+          <div class="price-row"><span>GST (18%)</span><span id="taxAmt">-</span></div>
+          <div class="price-row"><span>Service charge (5%)</span><span id="svcAmt">-</span></div>
+          <div class="price-row total"><span>Total Payable</span><span id="totalAmt">-</span></div>
+        </div>
+
+        <div id="bookingAlert" class="alert d-none"></div>
+
+        <button class="btn btn-banjare-primary w-100 py-3 mt-2" id="bookBtn" onclick="proceedToBook()">
+          <i class="fas fa-calendar-check me-2"></i>Book Now & Pay
+        </button>
+        <p class="text-center text-muted small mt-2"><i class="fas fa-shield-alt me-1"></i>Secure payment via Razorpay</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function calcPrice() {
+  const start = document.getElementById('startDate')?.value;
+  const end   = document.getElementById('endDate')?.value;
+  if (!start || !end || end <= start) return;
+
+  try {
+    const res = await BookingAPI.calculatePrice({ vehicleId: vehicle._id, startDate: start, endDate: end });
+    document.getElementById('baseAmt').textContent = formatCurrency(res.baseAmount);
+    document.getElementById('taxAmt').textContent  = formatCurrency(res.taxAmount);
+    document.getElementById('svcAmt').textContent  = formatCurrency(res.serviceCharge);
+    document.getElementById('totalAmt').textContent= formatCurrency(res.totalPrice);
+    document.getElementById('priceBreakdown').classList.remove('d-none');
+    document.getElementById('bookBtn').textContent = `Book & Pay ${formatCurrency(res.totalPrice)}`;
+  } catch {}
+}
+
+async function proceedToBook() {
+  if (!isLoggedIn()) { window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`; return; }
+
+  const start    = document.getElementById('startDate').value;
+  const end      = document.getElementById('endDate').value;
+  const pickup   = document.getElementById('pickupLocation').value.trim();
+  const pass     = document.getElementById('passengers').value;
+  const alertEl  = document.getElementById('bookingAlert');
+
+  if (!start || !end)    { alertEl.className='alert alert-warning'; alertEl.textContent='Please select travel dates.'; return; }
+  if (end <= start)      { alertEl.className='alert alert-warning'; alertEl.textContent='Return date must be after pickup date.'; return; }
+  if (!pickup)           { alertEl.className='alert alert-warning'; alertEl.textContent='Please enter pickup location.'; return; }
+
+  alertEl.className = 'alert d-none';
+  const btn = document.getElementById('bookBtn');
+  btn.disabled = true; btn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Creating booking...';
+
+  try {
+    const res = await BookingAPI.create({ vehicleId: vehicle._id, startDate: start, endDate: end, pickupLocation: pickup, passengers: parseInt(pass) });
+    bookingId = res.data._id;
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Proceed to Payment';
+
+    // Open Razorpay
+    initiateRazorpayPayment(bookingId, (result) => {
+      window.location.href = `my-bookings.html?success=1`;
+    });
+  } catch (err) {
+    alertEl.className = 'alert alert-danger';
+    alertEl.textContent = err.message || 'Booking failed. Please try again.';
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-calendar-check me-2"></i>Book Now & Pay';
+  }
+}
+
+async function loadReviews(vehicleId) {
+  try {
+    const res = await ReviewAPI.getByVehicle(vehicleId);
+    const container = document.getElementById('reviewsContainer');
+    if (!container) return;
+    if (!res.data?.length) { container.innerHTML = '<p class="text-muted">No reviews yet. Be the first to review!</p>'; return; }
+    container.innerHTML = res.data.map(r => `
+      <div class="review-card">
+        <div class="d-flex justify-content-between">
+          <strong>${r.userId?.name||'Traveler'}</strong>
+          <span style="color:#f4a261">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+        </div>
+        <p class="text-muted mb-0 mt-1" style="font-size:0.9rem">${r.comment}</p>
+        <small class="text-muted">${formatDate(r.createdAt)}</small>
+      </div>`).join('');
+  } catch {}
+}
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

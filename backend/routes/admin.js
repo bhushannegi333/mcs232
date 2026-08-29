@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const { protect, authorize } = require('../middleware/auth');
+const { getDashboardStats, getPendingListings, approveVehicle, rejectVehicle, approveTour, getUsers, toggleUserBlock, getAllBookings } = require('../controllers/adminController');
+router.use(protect, authorize('admin'));
+router.get('/dashboard', getDashboardStats);
+router.get('/pending-listings', getPendingListings);
+router.put('/approve/vehicle/:id', approveVehicle);
+router.delete('/reject/vehicle/:id', rejectVehicle);
+router.put('/approve/tour/:id', approveTour);
+router.get('/users', getUsers);
+router.put('/users/:id/toggle-block', toggleUserBlock);
+router.get('/bookings', getAllBookings);
+module.exports = router;

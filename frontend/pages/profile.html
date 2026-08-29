@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    .profile-avatar-wrapper { position: relative; display: inline-block; }
+    .profile-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--green-mid); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; border: 4px solid white; box-shadow: var(--shadow-sm); }
+    .role-badge { position: absolute; bottom: 0; right: 0; background: var(--gold); color: var(--text-dark); font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 50px; }
+    .form-section { background: white; border-radius: 14px; padding: 28px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+    .form-section h5 { font-family: 'Yeseva One', serif; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html" style="text-decoration:none;color:inherit"><span style="font-size:1.4rem">🏔️ Banjare</span></a>
+    <div class="user-info mt-3">
+      <div class="user-avatar" id="sidebarAvatar">U</div>
+      <div><div class="fw-bold" id="sidebarName">User</div><small style="opacity:0.65" id="sidebarRole">Traveler</small></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link" href="dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+    <a class="sidebar-link" href="my-bookings.html"><i class="fas fa-calendar-check"></i>My Bookings</a>
+    <a class="sidebar-link active" href="profile.html"><i class="fas fa-user-cog"></i>Profile</a>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"/>
+    <a class="sidebar-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </nav>
+</nav>
+
+<div class="main-content">
+  <div class="page-header">
+    <h1>My Profile 👤</h1>
+    <p class="text-muted">Manage your personal information and security settings</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Profile Summary Card -->
+    <div class="col-md-4">
+      <div class="form-section text-center">
+        <div class="profile-avatar-wrapper mb-3">
+          <div class="profile-avatar mx-auto" id="profileAvatarLarge">U</div>
+          <span class="role-badge" id="profileRoleBadge">User</span>
+        </div>
+        <h4 style="font-family:'Yeseva One',serif" id="profileDisplayName">Loading...</h4>
+        <p class="text-muted small" id="profileDisplayEmail">—</p>
+        <p class="text-muted small"><i class="fas fa-phone me-1"></i><span id="profileDisplayPhone">—</span></p>
+        <p class="text-muted small"><i class="fas fa-calendar me-1"></i>Member since <span id="profileJoined">—</span></p>
+        <div class="mt-3">
+          <span class="badge bg-success" id="profileStatusBadge">Active Account</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Forms -->
+    <div class="col-md-8">
+      <!-- Personal Info -->
+      <div class="form-section">
+        <h5>Personal Information</h5>
+        <div id="profileAlert" class="alert d-none"></div>
+        <form id="profileForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Full Name</label>
+              <input type="text" class="form-control" id="profileName" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Email Address</label>
+              <input type="email" class="form-control" id="profileEmail" readonly style="background:#f8f8f8"/>
+              <small class="text-muted">Email cannot be changed</small>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Mobile Number</label>
+              <div class="input-group">
+                <span class="input-group-text">+91</span>
+                <input type="tel" class="form-control" id="profilePhone" maxlength="10" pattern="[6-9][0-9]{9}"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Account Role</label>
+              <input type="text" class="form-control" id="profileRole" readonly style="background:#f8f8f8;text-transform:capitalize"/>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Street Address</label>
+              <input type="text" class="form-control" id="profileStreet" placeholder="Village/Town, District"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">City</label>
+              <input type="text" class="form-control" id="profileCity" placeholder="Dehradun"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Pincode</label>
+              <input type="text" class="form-control" id="profilePincode" placeholder="248001" maxlength="6"/>
+            </div>
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="btn btn-banjare-primary">
+              <span id="saveProfileText"><i class="fas fa-save me-2"></i>Save Changes</span>
+              <span id="saveProfileSpinner" class="d-none"><div class="spinner-border spinner-border-sm me-2"></div>Saving...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change Password -->
+      <div class="form-section">
+        <h5>Change Password</h5>
+        <div id="passwordAlert" class="alert d-none"></div>
+        <form id="passwordForm">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-bold">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">New Password</label>
+              <input type="password" class="form-control" id="newPassword" required minlength="6"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword" required/>
+            </div>
+          </div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-outline-success">
+              <i class="fas fa-lock me-2"></i>Update Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth()) return;
+
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth(); window.location.href = '../index.html';
+  });
+
+  // Load profile
+  try {
+    const res  = await AuthAPI.getMe();
+    const user = res.user;
+
+    // Sidebar
+    document.getElementById('sidebarName').textContent   = user.name;
+    document.getElementById('sidebarAvatar').textContent = user.name?.[0] || 'U';
+    document.getElementById('sidebarRole').textContent   = capitalize(user.role);
+
+    // Profile card
+    document.getElementById('profileAvatarLarge').textContent = user.name?.[0] || 'U';
+    document.getElementById('profileRoleBadge').textContent   = capitalize(user.role);
+    document.getElementById('profileDisplayName').textContent  = user.name;
+    document.getElementById('profileDisplayEmail').textContent = user.email;
+    document.getElementById('profileDisplayPhone').textContent = user.phone || 'Not provided';
+    document.getElementById('profileJoined').textContent      = formatDate(user.createdAt);
+
+    // Form fields
+    document.getElementById('profileName').value    = user.name || '';
+    document.getElementById('profileEmail').value   = user.email || '';
+    document.getElementById('profilePhone').value   = user.phone || '';
+    document.getElementById('profileRole').value    = user.role || '';
+    document.getElementById('profileStreet').value  = user.address?.street || '';
+    document.getElementById('profileCity').value    = user.address?.city || '';
+    document.getElementById('profilePincode').value = user.address?.pincode || '';
+  } catch (err) {
+    showToast('Could not load profile.', 'error');
+  }
+
+  // Profile form submit
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertEl = document.getElementById('profileAlert');
+    const btnText = document.getElementById('saveProfileText');
+    const spinner = document.getElementById('saveProfileSpinner');
+    btnText.classList.add('d-none'); spinner.classList.remove('d-none');
+
+    try {
+      const data = {
+        name:  document.getElementById('profileName').value.trim(),
+        phone: document.getElementById('profilePhone').value.trim(),
+        address: {
+          street:  document.getElementById('profileStreet').value.trim(),
+          city:    document.getElementById('profileCity').value.trim(),
+          pincode: document.getElementById('profilePincode').value.trim(),
+          state:   'Uttarakhand'
+        }
+      };
+      const res = await AuthAPI.updateProfile(data);
+      // Update local storage
+      const stored = getUser();
+      setAuth(getToken(), { ...stored, ...res.user });
+      alertEl.className = 'alert alert-success';
+      alertEl.textContent = '✅ Profile updated successfully!';
+      document.getElementById('profileDisplayName').textContent = res.user.name;
+      showToast('Profile saved!', 'success');
+    } catch (err) {
+      alertEl.className = 'alert alert-danger';
+      alertEl.textContent = err.message || 'Update failed.';
+    } finally {
+      btnText.classList.remove('d-none'); spinner.classList.add('d-none');
+    }
+  });
+
+  // Password form submit
+  document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertEl = document.getElementById('passwordAlert');
+    const newPwd  = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+
+    if (newPwd !== confirm) {
+      alertEl.className = 'alert alert-danger';
+      alertEl.textContent = 'New passwords do not match.';
+      return;
+    }
+    try {
+      await AuthAPI.changePassword({
+        currentPassword: document.getElementById('currentPassword').value,
+        newPassword: newPwd
+      });
+      alertEl.className = 'alert alert-success';
+      alertEl.textContent = '✅ Password changed successfully!';
+      document.getElementById('passwordForm').reset();
+      showToast('Password updated!', 'success');
+    } catch (err) {
+      alertEl.className = 'alert alert-danger';
+      alertEl.textContent = err.message || 'Password change failed.';
+    }
+  });
+});
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

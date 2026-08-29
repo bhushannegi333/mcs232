@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tour Packages – Banjare | Uttarakhand</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    body { padding-top: 70px; background: #f8fffe; }
+    .tour-type-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .type-pill {
+      padding: 8px 20px; border-radius: 50px; border: 2px solid #e9ecef;
+      background: white; cursor: pointer; font-weight: 700; font-size: 0.88rem;
+      transition: all 0.2s; font-family: 'Nunito', sans-serif;
+    }
+    .type-pill:hover, .type-pill.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+    .tour-card-full {
+      background: white; border-radius: 14px; overflow: hidden;
+      box-shadow: var(--shadow-sm); transition: all 0.3s; border: 1px solid #f0f0f0;
+      display: flex; height: 220px;
+    }
+    .tour-card-full:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .tour-card-img {
+      width: 260px; flex-shrink: 0; position: relative;
+      display: flex; align-items: center; justify-content: center; font-size: 4rem;
+    }
+    .tour-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .tour-card-content { padding: 20px 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .tour-meta { display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0; }
+    .tour-meta-item { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; }
+    .tour-meta-item i { color: var(--green-mid); margin-right: 4px; }
+    .tour-includes { display: flex; gap: 6px; flex-wrap: wrap; }
+    .include-tag { background: var(--green-pale); color: var(--green-dark); padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+    .tour-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+    @media(max-width: 768px) {
+      .tour-card-full { flex-direction: column; height: auto; }
+      .tour-card-img { width: 100%; height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg banjare-nav fixed-top scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html"><span class="brand-icon">🏔️</span><span class="brand-text">Banjare</span></a>
+    <div class="d-flex gap-2 ms-auto" id="navAuthLinks">
+      <a class="btn btn-outline-light btn-sm" href="login.html">Login</a>
+      <a class="btn btn-danger btn-sm" href="register.html">Register</a>
+    </div>
+    <div class="d-none" id="navUserMenu">
+      <div class="dropdown">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i><span id="navUserName"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+          <li><a class="dropdown-item" href="my-bookings.html">My Bookings</a></li>
+          <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<div style="background: linear-gradient(135deg, #1a3c34, #0d2b24); padding: 50px 0 40px; color: white;">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2" style="--bs-breadcrumb-divider-color:rgba(255,255,255,0.5)">
+        <li class="breadcrumb-item"><a href="../index.html" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item active text-white">Tours</li>
+      </ol>
+    </nav>
+    <h1 style="font-family:'Yeseva One',serif">🏕️ Tour Packages – Uttarakhand</h1>
+    <p style="opacity:0.75;margin-top:8px">Handcrafted packages for Char Dham, Adventure, Wildlife & more</p>
+
+    <!-- Tour type stats -->
+    <div class="d-flex gap-4 mt-3 flex-wrap">
+      <span style="opacity:0.8;font-size:0.9rem"><i class="fas fa-gopuram me-1" style="color:var(--gold)"></i>Pilgrimage</span>
+      <span style="opacity:0.8;font-size:0.9rem"><i class="fas fa-mountain me-1" style="color:var(--gold)"></i>Adventure</span>
+      <span style="opacity:0.8;font-size:0.9rem"><i class="fas fa-paw me-1" style="color:var(--gold)"></i>Wildlife</span>
+      <span style="opacity:0.8;font-size:0.9rem"><i class="fas fa-skiing me-1" style="color:var(--gold)"></i>Winter Sports</span>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Tour Type Filter Pills -->
+  <div class="tour-type-filter">
+    <button class="type-pill active" data-type="">🗺️ All Tours</button>
+    <button class="type-pill" data-type="pilgrimage">🛕 Pilgrimage</button>
+    <button class="type-pill" data-type="adventure">🧗 Adventure</button>
+    <button class="type-pill" data-type="wildlife">🐯 Wildlife</button>
+    <button class="type-pill" data-type="trekking">🥾 Trekking</button>
+    <button class="type-pill" data-type="wellness">🧘 Wellness</button>
+    <button class="type-pill" data-type="cultural">🎭 Cultural</button>
+  </div>
+
+  <!-- Sort and filters bar -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <span class="fw-bold text-muted" id="resultsCount">Loading tours...</span>
+    <div class="d-flex gap-2">
+      <select class="form-select form-select-sm" id="cityFilter" style="width:auto" onchange="loadTours()">
+        <option value="">All Cities</option>
+        <option>Dehradun</option><option>Rishikesh</option><option>Haridwar</option>
+        <option>Nainital</option><option>Kedarnath</option><option>Badrinath</option><option>Auli</option>
+      </select>
+      <select class="form-select form-select-sm" id="sortTours" style="width:auto" onchange="loadTours()">
+        <option value="-createdAt">Newest</option>
+        <option value="price">Price: Low to High</option>
+        <option value="-price">Price: High to Low</option>
+        <option value="durationDays">Duration: Short</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tours List -->
+  <div id="toursContainer">
+    <div class="text-center py-5">
+      <div class="spinner-border text-success" style="width:3rem;height:3rem" role="status"></div>
+      <p class="mt-3 text-muted">Loading tour packages...</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4" id="tourPagination"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let activeType = '';
+let currentPage = 1;
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Type pill clicks
+  document.querySelectorAll('.type-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeType = pill.dataset.type;
+      currentPage = 1;
+      loadTours();
+    });
+  });
+
+  // Load from URL params
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('type')) {
+    activeType = params.get('type');
+    document.querySelectorAll('.type-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.type === activeType);
+    });
+  }
+
+  loadTours();
+});
+
+async function loadTours(page = currentPage) {
+  const container = document.getElementById('toursContainer');
+  container.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-success"></div></div>';
+
+  const params = {
+    page, limit: 8,
+    sort: document.getElementById('sortTours').value
+  };
+  const city = document.getElementById('cityFilter').value;
+  if (activeType) params.tourType = activeType;
+  if (city) params.startCity = city;
+
+  try {
+    const res = await TourAPI.getAll(params);
+    renderTours(res.data || [], res.total || 0, Math.ceil((res.total||0)/8), page);
+  } catch (err) {
+    container.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Could not load tours.</div>';
+  }
+}
+
+function renderTours(tours, total, totalPages, page) {
+  const container = document.getElementById('toursContainer');
+  document.getElementById('resultsCount').textContent = `${total} tour package${total !== 1 ? 's' : ''} found`;
+
+  if (!tours.length) {
+    container.innerHTML = `
+      <div class="text-center py-5 text-muted">
+        <i class="fas fa-compass fa-3x opacity-25 d-block mb-3"></i>
+        <h5>No tours found</h5>
+        <p>Try a different category or city</p>
+      </div>`;
+    document.getElementById('tourPagination').innerHTML = '';
+    return;
+  }
+
+  const typeColors = { pilgrimage:'#1a1a2e', adventure:'#1a3c34', wildlife:'#3b1800', cultural:'#2d3a1e', wellness:'#003049', trekking:'#1a3a5c' };
+  const typeIcons  = { pilgrimage:'🛕', adventure:'🧗', wildlife:'🐯', cultural:'🎭', wellness:'🧘', trekking:'🥾' };
+
+  container.innerHTML = tours.map(t => {
+    const bgColor = typeColors[t.tourType] || '#1a3c34';
+    const icon    = typeIcons[t.tourType] || '🏕️';
+    const img = t.images?.[0]
+      ? `<img src="${t.images[0]}" alt="${t.title}"/>`
+      : `<div style="width:100%;height:100%;background:${bgColor};display:flex;align-items:center;justify-content:center;font-size:4rem">${icon}</div>`;
+    const includes = (t.includes || []).slice(0, 3);
+    const dests    = (t.destinations || []).slice(0, 3).join(' · ');
+
+    return `
+    <div class="mb-3" onclick="window.location='tour-details.html?id=${t._id}'" style="cursor:pointer">
+      <div class="tour-card-full">
+        <div class="tour-card-img">${img}</div>
+        <div class="tour-card-content">
+          <div>
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-1">
+              <span class="badge" style="background:${bgColor};font-size:0.75rem">${icon} ${capitalize(t.tourType)}</span>
+              <span class="badge bg-secondary" style="font-size:0.75rem">${capitalize(t.difficulty||'easy')}</span>
+            </div>
+            <h5 style="font-family:'Yeseva One',serif;margin-bottom:4px">${t.title}</h5>
+            ${dests ? `<p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1 text-success"></i>${dests}</p>` : ''}
+            <div class="tour-meta">
+              <span class="tour-meta-item"><i class="fas fa-calendar"></i>${t.durationDays} Days</span>
+              <span class="tour-meta-item"><i class="fas fa-users"></i>Max ${t.maxGroupSize||15} pax</span>
+              <span class="tour-meta-item"><i class="fas fa-map-marker-alt"></i>${t.startCity}</span>
+            </div>
+          </div>
+          <div>
+            ${includes.length ? `<div class="tour-includes">${includes.map(i=>`<span class="include-tag">✓ ${i}</span>`).join('')}</div>` : ''}
+            <div class="tour-footer">
+              <div>
+                <span style="font-family:'Yeseva One',serif;font-size:1.5rem;color:var(--green-dark)">${formatCurrency(t.price)}</span>
+                <small class="text-muted"> / person</small>
+              </div>
+              <button class="btn btn-banjare-primary btn-sm" onclick="event.stopPropagation();window.location='tour-details.html?id=${t._id}'">
+                View Details <i class="fas fa-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pagination
+  if (totalPages <= 1) { document.getElementById('tourPagination').innerHTML = ''; return; }
+  let html = '<nav><ul class="pagination">';
+  html += `<li class="page-item ${page===1?'disabled':''}"><a class="page-link" href="#" onclick="changeTourPage(${page-1})">‹</a></li>`;
+  for (let i = 1; i <= totalPages; i++) html += `<li class="page-item ${i===page?'active':''}"><a class="page-link" href="#" onclick="changeTourPage(${i})">${i}</a></li>`;
+  html += `<li class="page-item ${page===totalPages?'disabled':''}"><a class="page-link" href="#" onclick="changeTourPage(${page+1})">›</a></li></ul></nav>`;
+  document.getElementById('tourPagination').innerHTML = html;
+}
+
+function changeTourPage(p) { currentPage = p; loadTours(p); window.scrollTo(0,0); }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

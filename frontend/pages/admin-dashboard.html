@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html" style="text-decoration:none;color:inherit"><span style="font-size:1.4rem">🏔️ Banjare</span></a>
+    <div class="user-info mt-3">
+      <div class="user-avatar" style="background:#e63946">A</div>
+      <div><div class="fw-bold">Admin</div><small style="opacity:0.65">System Administrator</small></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link active" href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+    <a class="sidebar-link" href="admin-listings.html"><i class="fas fa-list-check"></i>Pending Listings</a>
+    <a class="sidebar-link" href="admin-users.html"><i class="fas fa-users"></i>Users</a>
+    <a class="sidebar-link" href="admin-bookings.html"><i class="fas fa-calendar-check"></i>All Bookings</a>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"/>
+    <a class="sidebar-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </nav>
+</nav>
+
+<div class="main-content">
+  <div class="page-header">
+    <h1>Admin Dashboard 🛡️</h1>
+    <p class="text-muted">Platform overview and management</p>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d1fae5"><i class="fas fa-users" style="color:#065f46"></i></div>
+        <h3 id="statTotalUsers">-</h3><p>Total Users</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe"><i class="fas fa-car" style="color:#1e40af"></i></div>
+        <h3 id="statTotalVehicles">-</h3><p>Active Vehicles</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3c7"><i class="fas fa-clock" style="color:#92400e"></i></div>
+        <h3 id="statPending" style="color:#e63946">-</h3><p>Pending Approvals</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fce7f3"><i class="fas fa-rupee-sign" style="color:#9d174d"></i></div>
+        <h3 id="statRevenue">-</h3><p>Total Revenue</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="stat-card text-center py-3">
+        <div style="font-size:1.8rem;color:var(--green-mid)" id="statOwners">-</div>
+        <p class="mb-0 small fw-bold">Vehicle Owners</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card text-center py-3">
+        <div style="font-size:1.8rem;color:#1e40af" id="statBookings">-</div>
+        <p class="mb-0 small fw-bold">Total Bookings</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card text-center py-3">
+        <div style="font-size:1.8rem;color:#9d174d" id="statMonthBookings">-</div>
+        <p class="mb-0 small fw-bold">This Month</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card text-center py-3">
+        <div style="font-size:1.8rem;color:#065f46" id="statTours">-</div>
+        <p class="mb-0 small fw-bold">Active Tours</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-8">
+      <div class="stat-card">
+        <h5 style="font-family:'Yeseva One',serif;margin-bottom:20px">Booking Trends</h5>
+        <canvas id="bookingChart" height="120"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h5 style="font-family:'Yeseva One',serif;margin-bottom:20px">Top Cities</h5>
+        <canvas id="citiesChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Approvals -->
+  <div class="banjare-table mb-4">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">⏳ Pending Approvals</h5>
+      <a href="admin-listings.html" class="btn btn-sm btn-outline-success">View All</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Vehicle</th><th>Owner</th><th>City</th><th>Price/Day</th><th>Submitted</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="pendingTableBody">
+          <tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm text-success"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Bookings -->
+  <div class="banjare-table mb-4">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">Recent Bookings</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>#</th><th>Customer</th><th>Vehicle</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+        </thead>
+        <tbody id="recentBookingsBody">
+          <tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm text-success"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Users -->
+  <div class="banjare-table">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">New Registrations</h5>
+      <a href="admin-users.html" class="btn btn-sm btn-outline-success">Manage Users</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="recentUsersBody">
+          <tr><td colspan="5" class="text-center py-4"><div class="spinner-border spinner-border-sm text-success"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth('admin')) return;
+
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth(); window.location.href = '../index.html';
+  });
+
+  try {
+    const res = await AdminAPI.getDashboard();
+    const d = res.data;
+    const s = d.stats;
+
+    // Stats
+    document.getElementById('statTotalUsers').textContent    = s.totalUsers;
+    document.getElementById('statTotalVehicles').textContent = s.totalVehicles;
+    document.getElementById('statPending').textContent       = s.pendingVehicles;
+    document.getElementById('statRevenue').textContent       = formatCurrency(s.totalRevenue);
+    document.getElementById('statOwners').textContent        = s.totalOwners;
+    document.getElementById('statBookings').textContent      = s.totalBookings;
+    document.getElementById('statMonthBookings').textContent = s.monthBookings;
+    document.getElementById('statTours').textContent         = s.totalTours;
+
+    // Charts
+    renderBookingChart(d.bookingTrend || []);
+    renderCitiesChart(d.topCities || []);
+
+    // Pending listings
+    const pending = await AdminAPI.getPending();
+    renderPendingTable(pending.vehicles || []);
+
+    // Recent bookings
+    renderRecentBookings(d.recentBookings || []);
+    renderRecentUsers(d.recentUsers || []);
+  } catch (err) {
+    showToast('Could not load dashboard data.', 'error');
+  }
+});
+
+function renderBookingChart(trend) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const labels = trend.map(t => `${months[(t._id?.month||1)-1]} ${t._id?.year}`).reverse();
+  const data   = trend.map(t => t.count).reverse();
+  new Chart(document.getElementById('bookingChart'), {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Bookings', data, borderColor: '#2d6a4f', backgroundColor: 'rgba(45,106,79,0.08)', tension: 0.4, fill: true, pointBackgroundColor: '#2d6a4f' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f0f0f0' } } } }
+  });
+}
+
+function renderCitiesChart(cities) {
+  const colors = ['#2d6a4f','#40916c','#1a3c34','#e63946','#f4a261'];
+  new Chart(document.getElementById('citiesChart'), {
+    type: 'doughnut',
+    data: { labels: cities.map(c => c._id), datasets: [{ data: cities.map(c => c.count), backgroundColor: colors }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+function renderPendingTable(vehicles) {
+  const tbody = document.getElementById('pendingTableBody');
+  if (!vehicles.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">No pending approvals 🎉</td></tr>'; return; }
+  tbody.innerHTML = vehicles.slice(0,5).map(v => `
+    <tr>
+      <td><strong>${v.make} ${v.model} (${v.year})</strong><br/><small class="text-muted">${v.registrationNumber}</small></td>
+      <td>${v.ownerId?.name||'—'}<br/><small class="text-muted">${v.ownerId?.phone||''}</small></td>
+      <td>${v.city}</td>
+      <td class="fw-bold">${formatCurrency(v.pricePerDay)}</td>
+      <td><small>${formatDate(v.createdAt)}</small></td>
+      <td>
+        <button class="btn btn-sm btn-success me-1" onclick="approveVehicle('${v._id}',this)">✓ Approve</button>
+        <button class="btn btn-sm btn-outline-danger" onclick="rejectVehicle('${v._id}',this)">✗ Reject</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderRecentBookings(bookings) {
+  const tbody = document.getElementById('recentBookingsBody');
+  if (!bookings.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">No bookings.</td></tr>'; return; }
+  tbody.innerHTML = bookings.map(b => `<tr>
+    <td><small>#${b._id?.slice(-6)?.toUpperCase()}</small></td>
+    <td>${b.userId?.name||'—'}</td>
+    <td>${b.vehicleId ? `${b.vehicleId.make} ${b.vehicleId.model}` : '—'}</td>
+    <td>${formatCurrency(b.totalPrice)}</td>
+    <td><span class="status-badge status-${b.status}">${capitalize(b.status)}</span></td>
+    <td><small>${formatDate(b.createdAt)}</small></td>
+  </tr>`).join('');
+}
+
+function renderRecentUsers(users) {
+  const tbody = document.getElementById('recentUsersBody');
+  if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-3 text-muted">No users.</td></tr>'; return; }
+  const roleColors = { user:'#d1fae5', owner:'#dbeafe', admin:'#fce7f3' };
+  const roleText   = { user:'#065f46', owner:'#1e40af', admin:'#9d174d' };
+  tbody.innerHTML = users.map(u => `<tr>
+    <td><strong>${u.name}</strong></td>
+    <td>${u.email}</td>
+    <td><span style="background:${roleColors[u.role]};color:${roleText[u.role]};padding:3px 10px;border-radius:50px;font-size:0.78rem;font-weight:700">${capitalize(u.role)}</span></td>
+    <td><small>${formatDate(u.createdAt)}</small></td>
+    <td><button class="btn btn-sm btn-outline-danger" onclick="blockUser('${u._id}',this)">Block</button></td>
+  </tr>`).join('');
+}
+
+async function approveVehicle(id, btn) {
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    await AdminAPI.approveVehicle(id);
+    btn.closest('tr').remove();
+    showToast('Vehicle approved! It is now live.', 'success');
+    // Update pending count
+    const el = document.getElementById('statPending');
+    el.textContent = Math.max(0, parseInt(el.textContent) - 1);
+  } catch (err) { showToast(err.message, 'error'); btn.disabled = false; btn.textContent = '✓ Approve'; }
+}
+
+async function rejectVehicle(id, btn) {
+  if (!confirm('Reject and delete this vehicle listing?')) return;
+  btn.disabled = true;
+  try {
+    await AdminAPI.rejectVehicle(id);
+    btn.closest('tr').remove();
+    showToast('Listing rejected.', 'info');
+  } catch (err) { showToast(err.message, 'error'); btn.disabled = false; }
+}
+
+async function blockUser(id, btn) {
+  if (!confirm('Block/unblock this user?')) return;
+  try {
+    const res = await AdminAPI.toggleBlock(id);
+    showToast(res.message, 'success');
+    btn.textContent = res.data?.isActive ? 'Block' : 'Unblock';
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>

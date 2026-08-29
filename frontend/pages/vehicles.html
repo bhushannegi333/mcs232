@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vehicles – Banjare | Book in Uttarakhand</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    body { padding-top: 70px; background: #f8fffe; }
+    .filter-sidebar { background: white; border-radius: 14px; padding: 24px; box-shadow: var(--shadow-sm); position: sticky; top: 90px; }
+    .filter-sidebar h6 { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 12px; }
+    .filter-group { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
+    .filter-group:last-child { border: none; margin: 0; padding: 0; }
+    .form-check-label { font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .sort-bar { background: white; border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .results-count { font-weight: 700; color: var(--text-dark); }
+    .pagination-wrapper { display: flex; justify-content: center; margin-top: 32px; }
+    .page-link { color: var(--green-dark); font-weight: 600; border-radius: 8px !important; margin: 0 3px; }
+    .page-item.active .page-link { background: var(--green-dark); border-color: var(--green-dark); }
+    .no-results { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .no-results i { font-size: 3rem; opacity: 0.3; margin-bottom: 16px; }
+    .range-value { font-weight: 700; color: var(--green-dark); }
+    .mobile-filter-btn { display: none; }
+    @media(max-width:768px) {
+      .filter-sidebar { position: static; display: none; }
+      .filter-sidebar.show { display: block; }
+      .mobile-filter-btn { display: block; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg banjare-nav fixed-top scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html"><span class="brand-icon">🏔️</span><span class="brand-text">Banjare</span></a>
+    <div class="d-flex gap-2 ms-auto" id="navAuthLinks">
+      <a class="btn btn-outline-light btn-sm" href="login.html">Login</a>
+      <a class="btn btn-danger btn-sm" href="register.html">Register</a>
+    </div>
+    <div class="d-none" id="navUserMenu">
+      <div class="dropdown">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i><span id="navUserName"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="dashboard.html"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+          <li><a class="dropdown-item" href="my-bookings.html"><i class="fas fa-calendar-check me-2"></i>My Bookings</a></li>
+          <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<div style="background: var(--green-dark); padding: 40px 0 30px; color: white;">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-2" style="--bs-breadcrumb-divider-color: rgba(255,255,255,0.5)">
+        <li class="breadcrumb-item"><a href="../index.html" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item active text-white">Vehicles</li>
+      </ol>
+    </nav>
+    <h1 style="font-family:'Yeseva One',serif;margin:0">🚗 Book a Vehicle in Uttarakhand</h1>
+    <p style="opacity:0.75;margin-top:6px">500+ verified vehicles across 20+ destinations</p>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Quick search bar -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <form id="quickSearchForm" class="row g-2">
+        <div class="col-md-3 col-6">
+          <select class="form-select" id="qCity">
+            <option value="">All Destinations</option>
+            <option>Dehradun</option><option>Rishikesh</option><option>Haridwar</option><option>Mussoorie</option>
+            <option>Nainital</option><option>Kedarnath</option><option>Badrinath</option><option>Auli</option>
+            <option>Jim Corbett</option><option>Chopta</option><option>Almora</option><option>Munsiyari</option>
+          </select>
+        </div>
+        <div class="col-md-2 col-6">
+          <input type="date" class="form-control" id="qDate" placeholder="Travel Date"/>
+        </div>
+        <div class="col-md-2 col-6">
+          <select class="form-select" id="qType">
+            <option value="">All Types</option>
+            <option value="sedan">Sedan</option><option value="suv">SUV</option>
+            <option value="innova">Innova</option><option value="tempo-traveller">Tempo Traveller</option>
+            <option value="mini-bus">Mini Bus</option>
+          </select>
+        </div>
+        <div class="col-md-2 col-6">
+          <select class="form-select" id="qSeats">
+            <option value="">Any Seats</option>
+            <option value="2">2+</option><option value="4">4+</option>
+            <option value="6">6+</option><option value="8">8+</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-banjare-primary w-100">
+            <i class="fas fa-search me-2"></i>Search Vehicles
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+      <button class="btn btn-outline-success w-100 mobile-filter-btn" onclick="toggleFilters()">
+        <i class="fas fa-filter me-2"></i>Filters
+      </button>
+      <div class="filter-sidebar" id="filterSidebar">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 style="font-family:'Yeseva One',serif;margin:0">Filters</h5>
+          <button class="btn btn-link btn-sm text-danger p-0" onclick="clearFilters()">Clear all</button>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+          <h6>Price Per Day</h6>
+          <input type="range" class="form-range" id="maxPrice" min="500" max="10000" step="500" value="10000" oninput="updatePriceLabel(this.value)"/>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted small">₹500</span>
+            <span class="range-value" id="priceLabel">Up to ₹10,000</span>
+          </div>
+        </div>
+
+        <!-- Vehicle Type -->
+        <div class="filter-group">
+          <h6>Vehicle Type</h6>
+          <div class="d-flex flex-column gap-2">
+            <div class="form-check"><input class="form-check-input filter-type" type="checkbox" value="sedan" id="fSedan"/><label class="form-check-label" for="fSedan">🚗 Sedan</label></div>
+            <div class="form-check"><input class="form-check-input filter-type" type="checkbox" value="suv" id="fSuv"/><label class="form-check-label" for="fSuv">🚙 SUV</label></div>
+            <div class="form-check"><input class="form-check-input filter-type" type="checkbox" value="innova" id="fInnova"/><label class="form-check-label" for="fInnova">🚐 Innova</label></div>
+            <div class="form-check"><input class="form-check-input filter-type" type="checkbox" value="tempo-traveller" id="fTempo"/><label class="form-check-label" for="fTempo">🚌 Tempo Traveller</label></div>
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="filter-group">
+          <h6>Amenities</h6>
+          <div class="d-flex flex-column gap-2">
+            <div class="form-check"><input class="form-check-input" type="checkbox" value="AC" id="fAC"/><label class="form-check-label" for="fAC">❄️ Air Conditioning</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" value="GPS" id="fGPS"/><label class="form-check-label" for="fGPS">📍 GPS Navigation</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" value="Music System" id="fMusic"/><label class="form-check-label" for="fMusic">🎵 Music System</label></div>
+          </div>
+        </div>
+
+        <!-- Fuel Type -->
+        <div class="filter-group">
+          <h6>Fuel Type</h6>
+          <div class="d-flex flex-column gap-2">
+            <div class="form-check"><input class="form-check-input filter-fuel" type="checkbox" value="diesel" id="fDiesel"/><label class="form-check-label" for="fDiesel">⛽ Diesel</label></div>
+            <div class="form-check"><input class="form-check-input filter-fuel" type="checkbox" value="petrol" id="fPetrol"/><label class="form-check-label" for="fPetrol">⛽ Petrol</label></div>
+            <div class="form-check"><input class="form-check-input filter-fuel" type="checkbox" value="cng" id="fCNG"/><label class="form-check-label" for="fCNG">🌿 CNG</label></div>
+          </div>
+        </div>
+
+        <button class="btn btn-banjare-primary w-100" onclick="applyFilters()">
+          <i class="fas fa-filter me-2"></i>Apply Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Vehicles Grid -->
+    <div class="col-lg-9">
+      <!-- Sort bar -->
+      <div class="sort-bar">
+        <span class="results-count" id="resultsCount">Loading...</span>
+        <select class="form-select form-select-sm" id="sortSelect" style="width:auto" onchange="applyFilters()">
+          <option value="-createdAt">Newest First</option>
+          <option value="pricePerDay">Price: Low to High</option>
+          <option value="-pricePerDay">Price: High to Low</option>
+          <option value="-rating">Highest Rated</option>
+        </select>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="row g-4" id="vehiclesGrid">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-success" role="status" style="width:3rem;height:3rem"></div>
+          <p class="mt-3 text-muted">Finding the best vehicles for you...</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-wrapper" id="pagination"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  let currentPage = 1;
+
+  // Load from URL params on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('city'))  document.getElementById('qCity').value  = p.get('city');
+    if (p.get('type'))  document.getElementById('qType').value  = p.get('type');
+    if (p.get('seats')) document.getElementById('qSeats').value = p.get('seats');
+    loadVehicles();
+  });
+
+  // Quick search submit
+  document.getElementById('quickSearchForm').addEventListener('submit', (e) => { e.preventDefault(); currentPage = 1; loadVehicles(); });
+
+  async function loadVehicles(page = currentPage) {
+    const grid = document.getElementById('vehiclesGrid');
+    grid.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-success"></div></div>';
+
+    const params = buildParams(page);
+    try {
+      const res = await VehicleAPI.getAll(params);
+      renderVehicles(res.data, res.total, res.totalPages, page);
+    } catch (err) {
+      grid.innerHTML = `<div class="col-12 no-results"><i class="fas fa-exclamation-circle d-block"></i><p>Could not load vehicles. Please try again.</p></div>`;
+    }
+  }
+
+  function buildParams(page) {
+    const params = { page, limit: 9, sort: document.getElementById('sortSelect').value };
+    const city  = document.getElementById('qCity').value;
+    const type  = document.getElementById('qType').value;
+    const seats = document.getElementById('qSeats').value;
+    const maxP  = document.getElementById('maxPrice').value;
+    if (city)  params.city        = city;
+    if (type)  params.vehicleType = type;
+    if (seats) params.seats       = seats;
+    if (maxP < 10000) params.maxPrice = maxP;
+    const types = [...document.querySelectorAll('.filter-type:checked')].map(c => c.value);
+    if (types.length) params.vehicleType = types[0]; // simple: use first selected
+    const features = [...document.querySelectorAll('#filterSidebar input[type=checkbox]:checked:not(.filter-type):not(.filter-fuel)')].map(c => c.value).join(',');
+    if (features) params.features = features;
+    return params;
+  }
+
+  function renderVehicles(vehicles, total, totalPages, page) {
+    const grid = document.getElementById('vehiclesGrid');
+    document.getElementById('resultsCount').textContent = `${total} vehicle${total!==1?'s':''} found`;
+
+    if (!vehicles?.length) {
+      grid.innerHTML = '<div class="col-12 no-results"><i class="fas fa-car d-block"></i><h5>No vehicles found</h5><p>Try adjusting your search filters</p></div>';
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+    grid.innerHTML = vehicles.map(v => vehicleCardHTML(v)).join('');
+    renderPagination(page, totalPages);
+  }
+
+  function renderPagination(current, total) {
+    if (total <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+    let html = '<nav><ul class="pagination">';
+    html += `<li class="page-item ${current===1?'disabled':''}"><a class="page-link" href="#" onclick="changePage(${current-1})">‹</a></li>`;
+    for (let i = 1; i <= total; i++) html += `<li class="page-item ${i===current?'active':''}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+    html += `<li class="page-item ${current===total?'disabled':''}"><a class="page-link" href="#" onclick="changePage(${current+1})">›</a></li>`;
+    html += '</ul></nav>';
+    document.getElementById('pagination').innerHTML = html;
+  }
+
+  function changePage(p) { currentPage = p; loadVehicles(p); window.scrollTo(0,0); }
+  function applyFilters() { currentPage = 1; loadVehicles(); }
+  function clearFilters() { document.querySelectorAll('#filterSidebar input').forEach(i => { if(i.type==='checkbox') i.checked=false; if(i.type==='range') i.value=10000; }); updatePriceLabel(10000); applyFilters(); }
+  function updatePriceLabel(v) { document.getElementById('priceLabel').textContent = v >= 10000 ? 'Any price' : `Up to ₹${Number(v).toLocaleString()}`; }
+  function toggleFilters() { document.getElementById('filterSidebar').classList.toggle('show'); }
+</script>
+</body>
+</html>

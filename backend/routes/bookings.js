@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const { protect, authorize } = require('../middleware/auth');
+const { createBooking, getMyBookings, getBookingById, cancelBooking, getOwnerBookings, calculateBookingPrice } = require('../controllers/bookingController');
+router.post('/', protect, createBooking);
+router.get('/', protect, getMyBookings);
+router.get('/owner', protect, authorize('owner', 'admin'), getOwnerBookings);
+router.get('/calculate-price', calculateBookingPrice);
+router.get('/:id', protect, getBookingById);
+router.put('/:id/cancel', protect, cancelBooking);
+module.exports = router;

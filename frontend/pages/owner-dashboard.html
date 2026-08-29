@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Owner Dashboard – Banjare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    .vehicle-list-item { background: white; border-radius: 12px; padding: 16px; display: flex; gap: 16px; align-items: center; box-shadow: var(--shadow-sm); margin-bottom: 12px; transition: all 0.2s; border: 1px solid #f0f0f0; }
+    .vehicle-list-item:hover { box-shadow: var(--shadow-md); }
+    .vehicle-thumb { width: 80px; height: 60px; border-radius: 8px; object-fit: cover; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; overflow: hidden; }
+    .approval-badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 50px; font-weight: 700; }
+    .approved { background: #d1fae5; color: #065f46; }
+    .pending-approval { background: #fef3c7; color: #92400e; }
+    .add-vehicle-btn { background: linear-gradient(135deg, var(--green-mid), var(--green-dark)); color: white; border: none; border-radius: 10px; padding: 12px 24px; font-family: 'Nunito',sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .add-vehicle-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(45,106,79,0.35); }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html" style="text-decoration:none;color:inherit"><span style="font-size:1.4rem">🏔️ Banjare</span></a>
+    <div class="user-info mt-3">
+      <div class="user-avatar" id="sidebarAvatar">O</div>
+      <div><div class="fw-bold" id="sidebarName">Owner</div><small style="opacity:0.65">Vehicle Owner</small></div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link active" href="owner-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+    <a class="sidebar-link" href="#addVehicle" onclick="showAddModal()"><i class="fas fa-plus-circle"></i>Add Vehicle</a>
+    <a class="sidebar-link" href="owner-bookings.html"><i class="fas fa-calendar-check"></i>Bookings</a>
+    <a class="sidebar-link" href="profile.html"><i class="fas fa-user-cog"></i>Profile</a>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0"/>
+    <a class="sidebar-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+  </nav>
+</nav>
+
+<div class="main-content">
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h1>Owner Dashboard 🚗</h1>
+      <p class="text-muted">Manage your vehicles and track bookings</p>
+    </div>
+    <button class="add-vehicle-btn" onclick="showAddModal()">
+      <i class="fas fa-plus me-2"></i>Add New Vehicle
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d1fae5"><i class="fas fa-car" style="color:#065f46"></i></div>
+        <h3 id="statVehicles">-</h3><p>My Vehicles</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3c7"><i class="fas fa-calendar-check" style="color:#92400e"></i></div>
+        <h3 id="statBookings">-</h3><p>Total Bookings</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe"><i class="fas fa-rupee-sign" style="color:#1e40af"></i></div>
+        <h3 id="statEarnings">-</h3><p>Total Earnings</p>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fce7f3"><i class="fas fa-star" style="color:#9d174d"></i></div>
+        <h3 id="statRating">-</h3><p>Avg Rating</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Vehicles -->
+  <div class="banjare-table p-0 mb-4" style="padding:0!important">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">My Vehicles</h5>
+    </div>
+    <div class="p-3" id="vehicleList">
+      <div class="text-center py-4"><div class="spinner-border text-success"></div></div>
+    </div>
+  </div>
+
+  <!-- Recent Bookings from owners -->
+  <div class="banjare-table">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 style="font-family:'Yeseva One',serif;margin:0">Incoming Bookings</h5>
+      <a href="owner-bookings.html" class="btn btn-sm btn-outline-success">View All</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Booking</th><th>Customer</th><th>Vehicle</th><th>Dates</th><th>Amount</th><th>Status</th></tr>
+        </thead>
+        <tbody id="ownerBookingsBody">
+          <tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm text-success"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Vehicle Modal -->
+<div class="modal fade" id="addVehicleModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background:var(--green-dark);color:white">
+        <h5 class="modal-title" style="font-family:'Yeseva One',serif">🚗 Add New Vehicle</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="addVehicleAlert" class="alert d-none"></div>
+        <form id="addVehicleForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Vehicle Make *</label>
+              <input type="text" class="form-control" id="vMake" placeholder="e.g., Toyota, Mahindra" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Model *</label>
+              <input type="text" class="form-control" id="vModel" placeholder="e.g., Innova Crysta" required/>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Year *</label>
+              <input type="number" class="form-control" id="vYear" min="2000" max="2026" placeholder="2022" required/>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Vehicle Type *</label>
+              <select class="form-select" id="vType" required>
+                <option value="">Select type</option>
+                <option value="sedan">Sedan</option><option value="suv">SUV</option>
+                <option value="innova">Innova</option><option value="tempo-traveller">Tempo Traveller</option>
+                <option value="mini-bus">Mini Bus</option><option value="hatchback">Hatchback</option>
+                <option value="bolero">Bolero</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Seating Capacity *</label>
+              <input type="number" class="form-control" id="vSeats" min="2" max="20" placeholder="6" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Registration Number *</label>
+              <input type="text" class="form-control" id="vReg" placeholder="UK07-AB-1234" required style="text-transform:uppercase"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Base City *</label>
+              <select class="form-select" id="vCity" required>
+                <option value="">Select city</option>
+                <option>Dehradun</option><option>Rishikesh</option><option>Haridwar</option>
+                <option>Mussoorie</option><option>Nainital</option><option>Kedarnath</option>
+                <option>Badrinath</option><option>Auli</option><option>Jim Corbett</option>
+                <option>Chopta</option><option>Almora</option><option>Ranikhet</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Price Per Day (₹) *</label>
+              <input type="number" class="form-control" id="vPrice" min="500" placeholder="2500" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Fuel Type *</label>
+              <select class="form-select" id="vFuel" required>
+                <option value="diesel">Diesel</option><option value="petrol">Petrol</option>
+                <option value="cng">CNG</option><option value="electric">Electric</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Features / Amenities</label>
+              <div class="d-flex flex-wrap gap-2">
+                <div class="form-check"><input class="form-check-input" type="checkbox" value="AC" id="fAC"/><label class="form-check-label small" for="fAC">AC</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" value="GPS" id="fGPS"/><label class="form-check-label small" for="fGPS">GPS</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" value="Music System" id="fMusic"/><label class="form-check-label small" for="fMusic">Music System</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" value="USB Charging" id="fUSB"/><label class="form-check-label small" for="fUSB">USB Charging</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" value="First Aid Kit" id="fFA"/><label class="form-check-label small" for="fFA">First Aid Kit</label></div>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Vehicle Images (up to 5)</label>
+              <input type="file" class="form-control" id="vImages" multiple accept="image/*"/>
+              <small class="text-muted">Max 5MB per image. JPEG, PNG, WebP accepted.</small>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Description</label>
+              <textarea class="form-control" id="vDesc" rows="3" placeholder="Describe your vehicle, special features, driver experience..."></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-banjare-primary" onclick="submitVehicle()">
+          <span id="submitVehicleText"><i class="fas fa-plus me-2"></i>Submit for Approval</span>
+          <span id="submitVehicleSpinner" class="d-none"><div class="spinner-border spinner-border-sm me-2"></div>Submitting...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!requireAuth('owner')) return;
+  const user = getUser();
+  document.getElementById('sidebarName').textContent  = user.name;
+  document.getElementById('sidebarAvatar').textContent = user.name?.[0] || 'O';
+
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth();
+    setTimeout(() => window.location.href = '../index.html', 300);
+  });
+
+  await Promise.all([loadMyVehicles(), loadOwnerBookings()]);
+});
+
+async function loadMyVehicles() {
+  try {
+    const res = await VehicleAPI.getMyListings();
+    const vehicles = res.data || [];
+    document.getElementById('statVehicles').textContent = vehicles.length;
+
+    const avgRating = vehicles.length ? (vehicles.reduce((s,v) => s+(v.rating||0), 0) / vehicles.length).toFixed(1) : '—';
+    document.getElementById('statRating').textContent = avgRating;
+
+    const list = document.getElementById('vehicleList');
+    if (!vehicles.length) {
+      list.innerHTML = `<div class="text-center py-5 text-muted">
+        <i class="fas fa-car fa-3x opacity-25 d-block mb-3"></i>
+        <h5>No vehicles listed yet</h5>
+        <p>Add your first vehicle to start accepting bookings</p>
+        <button class="btn btn-banjare-primary" onclick="showAddModal()">+ Add Vehicle</button>
+      </div>`;
+      return;
+    }
+    list.innerHTML = vehicles.map(v => `
+      <div class="vehicle-list-item">
+        <div class="vehicle-thumb">${v.images?.[0] ? `<img src="${v.images[0]}" style="width:100%;height:100%;object-fit:cover"/>` : '🚗'}</div>
+        <div class="flex-grow-1">
+          <div class="fw-bold">${v.make} ${v.model} (${v.year})</div>
+          <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${v.city} · ${v.seats} seats · ${v.registrationNumber}</small>
+        </div>
+        <div class="text-end">
+          <div class="fw-bold text-success">${formatCurrency(v.pricePerDay)}<small class="text-muted">/day</small></div>
+          <span class="approval-badge ${v.isApproved ? 'approved' : 'pending-approval'}">${v.isApproved ? '✓ Approved' : '⏳ Pending'}</span>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('${v._id}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    document.getElementById('vehicleList').innerHTML = '<p class="text-danger p-3">Could not load vehicles.</p>';
+  }
+}
+
+async function loadOwnerBookings() {
+  try {
+    const res = await BookingAPI.getOwnerBookings({ limit: 10 });
+    const bookings = res.data || [];
+    document.getElementById('statBookings').textContent = res.count || 0;
+
+    const earnings = bookings.filter(b => b.status === 'confirmed' || b.status === 'completed').reduce((s,b) => s+(b.totalPrice||0), 0);
+    document.getElementById('statEarnings').textContent = formatCurrency(earnings);
+
+    const tbody = document.getElementById('ownerBookingsBody');
+    if (!bookings.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No bookings yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => {
+      const vehicle = b.vehicleId ? `${b.vehicleId.make} ${b.vehicleId.model}` : 'Tour Package';
+      return `<tr>
+        <td><small class="text-muted">#${b._id?.slice(-6)?.toUpperCase()}</small></td>
+        <td>${b.userId?.name || 'Customer'}<br/><small class="text-muted">${b.userId?.phone || ''}</small></td>
+        <td>${vehicle}</td>
+        <td><small>${formatDate(b.startDate)} →<br/>${formatDate(b.endDate)}</small></td>
+        <td class="fw-bold">${formatCurrency(b.totalPrice)}</td>
+        <td><span class="status-badge status-${b.status}">${capitalize(b.status)}</span></td>
+      </tr>`;
+    }).join('');
+  } catch {}
+}
+
+function showAddModal() {
+  new bootstrap.Modal(document.getElementById('addVehicleModal')).show();
+}
+
+async function submitVehicle() {
+  const alertEl = document.getElementById('addVehicleAlert');
+  const make = document.getElementById('vMake').value.trim();
+  const model = document.getElementById('vModel').value.trim();
+  if (!make || !model) { alertEl.className='alert alert-warning'; alertEl.textContent='Please fill all required fields.'; return; }
+
+  const formData = new FormData();
+  formData.append('make', make);
+  formData.append('model', model);
+  formData.append('year', document.getElementById('vYear').value);
+  formData.append('vehicleType', document.getElementById('vType').value);
+  formData.append('seats', document.getElementById('vSeats').value);
+  formData.append('registrationNumber', document.getElementById('vReg').value.toUpperCase());
+  formData.append('city', document.getElementById('vCity').value);
+  formData.append('pricePerDay', document.getElementById('vPrice').value);
+  formData.append('fuelType', document.getElementById('vFuel').value);
+  formData.append('description', document.getElementById('vDesc').value);
+
+  const features = [...document.querySelectorAll('#addVehicleForm input[type=checkbox]:checked')].map(c => c.value);
+  features.forEach(f => formData.append('features[]', f));
+
+  const files = document.getElementById('vImages').files;
+  for (const file of files) formData.append('images', file);
+
+  document.getElementById('submitVehicleText').classList.add('d-none');
+  document.getElementById('submitVehicleSpinner').classList.remove('d-none');
+
+  try {
+    await VehicleAPI.create(formData);
+    bootstrap.Modal.getInstance(document.getElementById('addVehicleModal')).hide();
+    showToast('Vehicle submitted for admin approval! ✅', 'success');
+    setTimeout(() => location.reload(), 1000);
+  } catch (err) {
+    alertEl.className = 'alert alert-danger';
+    alertEl.textContent = err.message || 'Could not add vehicle.';
+    document.getElementById('submitVehicleText').classList.remove('d-none');
+    document.getElementById('submitVehicleSpinner').classList.add('d-none');
+  }
+}
+
+async function deleteVehicle(id) {
+  if (!confirm('Delete this vehicle listing?')) return;
+  try {
+    await VehicleAPI.delete(id);
+    showToast('Vehicle deleted.', 'success');
+    setTimeout(() => location.reload(), 800);
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+</script>
+</body>
+</html>
