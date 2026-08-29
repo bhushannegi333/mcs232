@@ -1,7 +1,7 @@
 # 🏔️ BANJARE – Tour, Travel & Vehicle Booking Platform (Uttarakhand)
 
 
-**site is live at https : //bhushannegi333.github.io/mcs232/**
+**site is live at https :** (//bhushannegi333.github.io/mcs232/)
 
 > **IGNOU MCA MCSP-232 Major Project**  
 > Student: **Bharatbhushan Negi** | Enrolment: **2452099854**  
